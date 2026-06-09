@@ -4,36 +4,32 @@ import Link from "next/link";
 import { useState } from "react";
 
 import {
-  Button,
-  Card,
-  Description,
-  FieldError,
-  Form,
-  Input,
-  Label,
-  Separator,
-  TextField,
+  Button, Card, Description, FieldError, Form, Input, Label, Separator, TextField
 } from "@heroui/react";
 
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
+import { Radio, RadioGroup } from "@heroui/react";
 
 import { authClient } from "@/lib/auth-client";
 
-import { redirect } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignUpPage() {
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const router = useRouter();
 
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
 
   // Success & Error Messages
   const [success, setSuccess] = useState("");
   const [apiError, setApiError] = useState("");
+
+  const [role, setRole] = useState("seeker");
 
   const OnSubmit = async (e) => {
     e.preventDefault();
@@ -55,6 +51,9 @@ export default function SignUpPage() {
       return;
     }
 
+    const plan = role === "seeker" ? "seeker_free" : "recruiter_free";
+
+
     try {
       setLoading(true);
 
@@ -62,8 +61,10 @@ export default function SignUpPage() {
         await authClient.signUp.email({
           name: user.name,
           email: user.email,
+          role,
           password: user.password,
           image: user.image,
+          plan
         });
 
       if (error) {
@@ -80,7 +81,7 @@ export default function SignUpPage() {
         );
 
         setTimeout(() => {
-          redirect("/signin");
+          router.push(redirectTo);
         }, 1500);
       }
     } catch (err) {
@@ -99,12 +100,12 @@ export default function SignUpPage() {
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4 py-10">
-      
+
       {/* Glow */}
       <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-violet-600/30 blur-[120px]" />
 
       <div className="relative w-full max-w-md">
-        
+
         {/* Heading */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-white">
@@ -271,16 +272,7 @@ export default function SignUpPage() {
               }
               className="w-full"
               validate={(value) => {
-                const password =
-                  document.querySelector(
-                    'input[name="password"]'
-                  )?.value;
-
-                if (value !== password) {
-                  return "Passwords do not match";
-                }
-
-                return null;
+                return value.length >= 6 ? null : "Password too short";
               }}
             >
               <Label className="text-gray-300">
@@ -312,6 +304,35 @@ export default function SignUpPage() {
 
               <FieldError />
             </TextField>
+
+
+
+            {/* Role Selection */}
+
+            <div className="flex flex-col gap-4">
+              <Label>Role</Label>
+              <RadioGroup defaultValue="seeker" name="role" orientation="horizontal" onChange={(value) => setRole(value)}>
+                <Radio value="seeker">
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  <Radio.Content>
+                    <Label>Job Seeker</Label>
+
+                  </Radio.Content>
+                </Radio>
+                <Radio value="recruiter">
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  <Radio.Content>
+                    <Label>Recruiter</Label>
+
+                  </Radio.Content>
+                </Radio>
+
+              </RadioGroup>
+            </div>
 
             {/* Submit Button */}
             <Button
@@ -348,7 +369,7 @@ export default function SignUpPage() {
           <div className="mt-8 text-center text-sm text-gray-400">
             Already have an account?{" "}
             <Link
-              href="/signin"
+              href={`/signin?redirect=${redirectTo}`}
               className="font-medium text-violet-400 hover:text-violet-300"
             >
               Sign In

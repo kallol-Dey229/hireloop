@@ -3,28 +3,24 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import {
-  Button,
-  Card,
-  FieldError,
-  Form,
-  Input,
-  Label,
-  Separator,
-  TextField,
-} from "@heroui/react";
+import {Button, Card, FieldError, Form, Input, Label, Separator, TextField} from "@heroui/react";
 
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 
 import { authClient } from "@/lib/auth-client";
 
-import { redirect } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
+
 export default function SignInPage() {
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
 
   const [loading, setLoading] = useState(false);
 
@@ -66,7 +62,7 @@ export default function SignInPage() {
         toast.success("Login successful");
 
         setTimeout(() => {
-          redirect("/");
+          router.push(redirectTo);
         }, 1500);
       }
     } catch (err) {
@@ -241,7 +237,7 @@ export default function SignInPage() {
           <div className="mt-8 text-center text-sm text-gray-400">
             Don&apos;t have an account?{" "}
             <Link
-              href="/register"
+              href={`/register?redirect=${redirectTo}`} 
               className="font-medium text-violet-400 hover:text-violet-300"
             >
               Sign Up

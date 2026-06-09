@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
+import { redirect } from "next/navigation";
+import toast from "react-hot-toast";
 
 
 
@@ -17,22 +19,27 @@ function Navbar() {
     refetch //refetch the session
   } = authClient.useSession();
 
-  const  user  = session?.user;
+  console.log("Session:", session);
+  console.log("User:", session?.user);
+
+  const user = session?.user;
 
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
     { name: "Browse Jobs", href: "/jobs" },
-    { name: "Company", href: "/company" },
-    { name: "Pricing", href: "/pricing" },
+    { name: "Companies", href: "/companies" },
+    { name: "Plans", href: "/plans" },
   ];
 
 
 
   const handleSignOut = async () => {
     await authClient.signOut();
-    refetch(); // Refresh session state after signing out
+    refetch();
+    toast.success("Signed out successfully!");
+    redirect("/signin");
   }
 
   return (
@@ -72,12 +79,26 @@ function Navbar() {
             ))}
           </ul>
 
-          <Link
+          <div className="h-8 w-px bg-white/20" />
+
+          
+
+              {user ?
+
+                <>
+                  <p className="text-blue-800 font-bold shadow-7xl">Hello, {user.name}!</p>
+                  <Button variant="danger" onClick={handleSignOut} className={"rounded-xl"}>Sign Out</Button>
+                </>
+                : <Link
             href="/signin"
             className="text-sm font-medium text-indigo-400 transition hover:text-indigo-300"
           >
             Sign In
-          </Link>
+          </Link>}
+  
+
+
+          
 
           <Link
             href="/register"
@@ -136,19 +157,19 @@ function Navbar() {
             ))}
 
             <li>
-              {user ? 
-              
-              <>
-              Hello, {user.name}! 
-              <Button variant="danger" onClick={handleSignOut}>Sign Out</Button>
-              </>
-              :<Link
-                href="/signin"
-                className="block font-medium text-indigo-400"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign In
-              </Link>}
+              {user ?
+
+                <>
+                  Hello, {user.name}!
+                  <Button variant="danger" onClick={handleSignOut}>Sign Out</Button>
+                </>
+                : <Link
+                  href="/signin"
+                  className="block font-medium text-indigo-400"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign In
+                </Link>}
             </li>
 
             <li>
