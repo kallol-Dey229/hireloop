@@ -34,6 +34,22 @@ function Navbar() {
   ];
 
 
+  const dashboardLinks = {
+    seeker : '/dashboard/seeker',
+    recruiter : '/dashboard/recruiter',
+    admin : '/dashboard/admin'
+  }
+
+  if(user?.email){
+    navLinks.push(
+      { 
+        name: "Dashboard", 
+        href: dashboardLinks[user?.role || 'seeker']
+      
+      });
+  }
+
+
 
   const handleSignOut = async () => {
     await authClient.signOut();
