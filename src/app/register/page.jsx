@@ -2,84 +2,79 @@
 
 import Link from "next/link";
 import { useState } from "react";
-
-import {
-  Button, Card, Description, FieldError, Form, Input, Label, Separator, TextField
-} from "@heroui/react";
-
-import { FiEye, FiEyeOff } from "react-icons/fi";
-import { FcGoogle } from "react-icons/fc";
-import { Radio, RadioGroup } from "@heroui/react";
-
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+// HeroUI Imports
+import {
+  Button,
+  Card,
+  Description,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  Separator,
+  TextField,
+  Radio,
+  RadioGroup
+} from "@heroui/react";
+
+// Icons
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FcGoogle } from "react-icons/fc";
+import { Flame } from "lucide-react";
 
 export default function SignUpPage() {
   const router = useRouter();
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/";
 
-  // Success & Error Messages
+  // Form states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState("member"); // 'member' or 'trainer'
+
+  // Notification states
   const [success, setSuccess] = useState("");
   const [apiError, setApiError] = useState("");
 
-  const [role, setRole] = useState("seeker");
-
   const OnSubmit = async (e) => {
     e.preventDefault();
-
     setSuccess("");
     setApiError("");
 
     const formData = new FormData(e.currentTarget);
+    const user = Object.fromEntries(formData.entries());
 
-    const user = Object.fromEntries(
-      formData.entries()
-    );
-
-    // Confirm Password Validation
-    if (
-      user.password !== user.confirmPassword
-    ) {
+    // Password Validation
+    if (user.password !== user.confirmPassword) {
       setApiError("Passwords do not match");
       return;
     }
 
-    const plan = role === "seeker" ? "seeker_free" : "recruiter_free";
-
+    const plan = role === "member" ? "member_free" : "trainer_free";
 
     try {
       setLoading(true);
 
-      const { data, error } =
-        await authClient.signUp.email({
-          name: user.name,
-          email: user.email,
-          role,
-          password: user.password,
-          image: user.image,
-          plan
-        });
+      const { data, error } = await authClient.signUp.email({
+        name: user.name,
+        email: user.email,
+        role,
+        password: user.password,
+        image: user.image,
+        plan
+      });
 
       if (error) {
-        setApiError(
-          error.message || "Signup Failed"
-        );
-
+        setApiError(error.message || "Signup Failed");
         return;
       }
 
       if (data) {
-        setSuccess(
-          "Account created successfully"
-        );
-
+        setSuccess("Account created successfully!");
         setTimeout(() => {
           router.push(redirectTo);
         }, 1500);
@@ -91,271 +86,177 @@ export default function SignUpPage() {
     }
   };
 
-  // Google Sign In
-  const handleGoogleSignin = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-    });
-  };
+  // const handleGoogleSignin = async () => {
+  //   await authClient.signIn.social({
+  //     provider: "google",
+  //   });
+  // };
 
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4 py-10">
-
-      {/* Glow */}
-      <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-violet-600/30 blur-[120px]" />
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#09090e] px-4 py-10">
+      
+      {/* Dynamic Branding Background Glow */}
+      <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-orange-600/20 blur-[120px]" />
 
       <div className="relative w-full max-w-md">
-
-        {/* Heading */}
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-white">
-            Create Account
+        
+        {/* Brand Header */}
+        <div className="mb-8 text-center flex flex-col items-center">
+          <div className="bg-orange-600 p-2 rounded mb-3">
+            <Flame className="w-6 h-6 text-white fill-white" />
+          </div>
+          <h1 className="text-3xl font-black uppercase tracking-tight text-white">
+            Forge<span className="text-orange-600">X</span> Account
           </h1>
-
-          <p className="mt-3 text-sm text-gray-400">
-            Join HireLoop and start your journey
+          <p className="mt-2 text-sm text-gray-400">
+            Start your high-performance fitness journey today
           </p>
         </div>
 
-        {/* Card */}
-        <Card className="border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-
-          {/* API Error */}
+        {/* Form Card Card */}
+        <Card className="border border-white/10 bg-white/5 p-8 backdrop-blur-xl rounded-xl">
+          
+          {/* Error Banner */}
           {apiError && (
             <div className="mb-5 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
               {apiError}
             </div>
           )}
 
-          {/* Success */}
+          {/* Success Banner */}
           {success && (
             <div className="mb-5 rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-400">
               {success}
             </div>
           )}
 
-          {/* Form */}
-          <Form
-            onSubmit={OnSubmit}
-            className="flex flex-col gap-5"
-          >
-
-            {/* Name */}
-            <TextField
-              isRequired
-              name="name"
-              type="text"
-              className="w-full"
-            >
-              <Label className="text-gray-300">
-                Full Name
-              </Label>
-
+          {/* Core Form */}
+          <Form onSubmit={OnSubmit} className="flex flex-col gap-5">
+            
+            {/* Full Name */}
+            <TextField isRequired name="name" type="text" className="w-full">
+              <Label className="text-gray-300 text-xs font-bold uppercase tracking-wider">Full Name</Label>
               <Input
                 placeholder="Enter your name"
-                className="w-full rounded-xl border border-white/10 bg-white/5 text-white placeholder:text-gray-500"
+                className="w-full rounded-xl border border-white/10 bg-white/5 text-white placeholder:text-gray-500 mt-1"
               />
-
-              <FieldError />
+              <FieldError className="text-xs text-red-400 mt-1" />
             </TextField>
 
-            {/* Image URL */}
-            <TextField
-              name="image"
-              type="url"
-              className="w-full"
-            >
-              <Label className="text-gray-300">
-                Image URL (optional)
-              </Label>
-
+            {/* Profile Image */}
+            <TextField name="image" type="url" className="w-full">
+              <Label className="text-gray-300 text-xs font-bold uppercase tracking-wider">Avatar Image URL (optional)</Label>
               <Input
-                placeholder="Enter your photo URL"
-                className="w-full rounded-xl border border-white/10 bg-white/5 text-white placeholder:text-gray-500"
+                placeholder="https://example.com/photo.jpg"
+                className="w-full rounded-xl border border-white/10 bg-white/5 text-white placeholder:text-gray-500 mt-1"
               />
-
-              <FieldError />
+              <FieldError className="text-xs text-red-400 mt-1" />
             </TextField>
 
-            {/* Email */}
+            {/* Email Address */}
             <TextField
               isRequired
               name="email"
               type="email"
               className="w-full"
-              validate={(value) => {
-                if (
-                  !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-                    value
-                  )
-                ) {
-                  return "Please enter a valid email";
-                }
-
-                return null;
-              }}
+              validate={(value) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value) ? null : "Please enter a valid email"}
             >
-              <Label className="text-gray-300">
-                Email Address
-              </Label>
-
+              <Label className="text-gray-300 text-xs font-bold uppercase tracking-wider">Email Address</Label>
               <Input
                 placeholder="Enter your email"
-                className="w-full rounded-xl border border-white/10 bg-white/5 text-white placeholder:text-gray-500"
+                className="w-full rounded-xl border border-white/10 bg-white/5 text-white placeholder:text-gray-500 mt-1"
               />
-
-              <FieldError />
+              <FieldError className="text-xs text-red-400 mt-1" />
             </TextField>
 
             {/* Password */}
             <TextField
               isRequired
               name="password"
-              type={
-                showPassword
-                  ? "text"
-                  : "password"
-              }
-              minLength={6}
+              type={showPassword ? "text" : "password"}
               className="w-full"
-              validate={(value) => {
-                if (value.length < 6) {
-                  return "Password must be at least 6 characters";
-                }
-
-                return null;
-              }}
+              validate={(value) => value.length >= 6 ? null : "Password must be at least 6 characters"}
             >
-              <Label className="text-gray-300">
-                Password
-              </Label>
-
-              <div className="relative w-full">
+              <Label className="text-gray-300 text-xs font-bold uppercase tracking-wider">Password</Label>
+              <div className="relative w-full mt-1">
                 <Input
-                  placeholder="Enter your password"
+                  placeholder="Create a strong password"
                   className="w-full rounded-xl border border-white/10 bg-white/5 pr-12 text-white placeholder:text-gray-500"
                 />
-
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowPassword(
-                      !showPassword
-                    )
-                  }
+                  onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 z-10 -translate-y-1/2 text-gray-400 hover:text-white"
                 >
-                  {showPassword ? (
-                    <FiEyeOff size={18} />
-                  ) : (
-                    <FiEye size={18} />
-                  )}
+                  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                 </button>
               </div>
-
-              <Description className="text-xs text-gray-500">
-                Password must be at least 6
-                characters
+              <Description className="text-xs text-gray-500 mt-1">
+                Password must be at least 6 characters
               </Description>
-
-              <FieldError />
+              <FieldError className="text-xs text-red-400 mt-1" />
             </TextField>
 
             {/* Confirm Password */}
             <TextField
               isRequired
               name="confirmPassword"
-              type={
-                showConfirmPassword
-                  ? "text"
-                  : "password"
-              }
+              type={showConfirmPassword ? "text" : "password"}
               className="w-full"
-              validate={(value) => {
-                return value.length >= 6 ? null : "Password too short";
-              }}
+              validate={(value) => value.length >= 6 ? null : "Password too short"}
             >
-              <Label className="text-gray-300">
-                Confirm Password
-              </Label>
-
-              <div className="relative w-full">
+              <Label className="text-gray-300 text-xs font-bold uppercase tracking-wider">Confirm Password</Label>
+              <div className="relative w-full mt-1">
                 <Input
-                  placeholder="Confirm your password"
+                  placeholder="Repeat your password"
                   className="w-full rounded-xl border border-white/10 bg-white/5 pr-12 text-white placeholder:text-gray-500"
                 />
-
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowConfirmPassword(
-                      !showConfirmPassword
-                    )
-                  }
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-4 top-1/2 z-10 -translate-y-1/2 text-gray-400 hover:text-white"
                 >
-                  {showConfirmPassword ? (
-                    <FiEyeOff size={18} />
-                  ) : (
-                    <FiEye size={18} />
-                  )}
+                  {showConfirmPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                 </button>
               </div>
-
-              <FieldError />
+              <FieldError className="text-xs text-red-400 mt-1" />
             </TextField>
 
-
-
-            {/* Role Selection */}
-
-            <div className="flex flex-col gap-4">
-              <Label>Role</Label>
-              <RadioGroup defaultValue="seeker" name="role" orientation="horizontal" onChange={(value) => setRole(value)}>
-                <Radio value="seeker">
-                  <Radio.Control>
-                    <Radio.Indicator />
-                  </Radio.Control>
-                  <Radio.Content>
-                    <Label>Job Seeker</Label>
-
-                  </Radio.Content>
+            {/* Fitness Identity Role */}
+            <div className="flex flex-col gap-2 mt-1">
+              <Label className="text-gray-300 text-xs font-bold uppercase tracking-wider">Select Account Type</Label>
+              <RadioGroup defaultValue="member" name="role" orientation="horizontal" onChange={(value) => setRole(value)}>
+                <Radio value="member">
+                  <Radio.Control><Radio.Indicator /></Radio.Control>
+                  <Radio.Content><Label className="text-sm font-medium text-gray-200">Gym Member</Label></Radio.Content>
                 </Radio>
-                <Radio value="recruiter">
-                  <Radio.Control>
-                    <Radio.Indicator />
-                  </Radio.Control>
-                  <Radio.Content>
-                    <Label>Recruiter</Label>
-
-                  </Radio.Content>
+                <Radio value="trainer">
+                  <Radio.Control><Radio.Indicator /></Radio.Control>
+                  <Radio.Content><Label className="text-sm font-medium text-gray-200">Fitness Coach</Label></Radio.Content>
                 </Radio>
-
               </RadioGroup>
             </div>
 
-            {/* Submit Button */}
+            {/* Native Submit */}
             <Button
               type="submit"
               isLoading={loading}
-              className="mt-2 h-12 w-full rounded-xl bg-white font-semibold text-black hover:bg-gray-200"
+              className="mt-4 h-12 w-full rounded-xl bg-orange-600 font-black text-white uppercase tracking-wider hover:bg-orange-700 transition-colors"
             >
               Create Account
             </Button>
           </Form>
 
-          {/* Divider */}
+          {/* Separator / Social Spliter */}
           <div className="my-6 flex items-center gap-3">
             <Separator className="bg-white/10 w-1/3" />
-
-            <span className="whitespace-nowrap text-sm text-gray-500">
-              Or continue with
+            <span className="whitespace-nowrap text-xs uppercase tracking-wider text-gray-500 font-bold">
+              Or Forge with
             </span>
-
             <Separator className="bg-white/10 w-1/3" />
           </div>
 
-          {/* Google Sign Up */}
+          {/* Social Sign Up */}
           <Button
             onClick={handleGoogleSignin}
             variant="bordered"
@@ -365,12 +266,12 @@ export default function SignUpPage() {
             Sign Up With Google
           </Button>
 
-          {/* Bottom */}
+          {/* Footer Link */}
           <div className="mt-8 text-center text-sm text-gray-400">
             Already have an account?{" "}
             <Link
               href={`/signin?redirect=${redirectTo}`}
-              className="font-medium text-violet-400 hover:text-violet-300"
+              className="font-bold text-orange-500 hover:text-orange-400 underline transition-colors"
             >
               Sign In
             </Link>
