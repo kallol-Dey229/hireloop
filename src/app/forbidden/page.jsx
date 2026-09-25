@@ -9,7 +9,7 @@ export default function ForbiddenPage() {
         
         {/* Icon Container */}
         <div className="relative flex justify-center">
-          {/* Decorative glowing background effect */}
+         
           <div className="absolute inset-0 bg-red-500/10 blur-xl rounded-full w-24 h-24 mx-auto" />
           
           <div className="relative bg-red-50 text-red-500 p-5 rounded-full border border-red-100 dark:bg-red-950/30 dark:border-red-900/50">
