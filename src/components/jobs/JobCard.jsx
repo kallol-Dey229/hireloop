@@ -17,12 +17,11 @@ export default function JobCard({ job }) {
     ? `$${formatSalary(job.minSalary)}–$${formatSalary(job.maxSalary)} / year`
     : "Salary Negociable";
 
-  // Safely extract the ID string depending on your MongoDB data hydration setup
   const jobId = job._id?.$oid || job._id;
 
   return (
     <Card className="p-6 w-full max-w-110 border-none bg-zinc-900 text-zinc-100 rounded-[32px] shadow-2xl">
-      
+
       {/* Card Header: Company Info & Job Title */}
       <Card.Header className="flex flex-col items-start gap-4 p-0 pb-3">
         <div className="flex items-center gap-3">
@@ -37,11 +36,11 @@ export default function JobCard({ job }) {
             {job.companyName || "Confidential"}
           </span>
         </div>
-        
+
         <Card.Title className="text-3xl font-semibold tracking-tight text-white leading-tight">
           {job.jobTitle}
         </Card.Title>
-        
+
         {job.responsibilities && (
           <Card.Description className="text-base text-zinc-400 line-clamp-2">
             {job.responsibilities}
