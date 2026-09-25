@@ -47,7 +47,7 @@ export default function StatsSection() {
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/60" />
 
-      {/* Purple Glow */}
+      
       <div className="absolute top-0 left-1/2 h-100 w-100 -translate-x-1/2 rounded-full bg-violet-600/30 blur-3xl" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">
