@@ -41,7 +41,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Simple Validation
+       
         if (file.size > 5 * 1024 * 1024) {
             setErrors(prev => ({ ...prev, logo: "File size exceeds 5MB limit" }));
             return;
@@ -327,7 +327,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
                                         className="hidden" 
                                     />
                                     {logoUrl ? (
-                                        <img src={logoUrl} alt="Logo Preview" className="w-full h-full object-cover" />
+                                        <Image src={logoUrl} alt="Logo Preview" width={56} height={56} className="w-full h-full object-cover" />
                                     ) : (
                                         <ArrowUpToLine size={18} className="text-zinc-400 group-hover:text-zinc-200 transition-colors" />
                                     )}
