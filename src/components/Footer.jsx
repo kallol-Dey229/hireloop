@@ -9,7 +9,6 @@ const Footer = () => {
     return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-black text-white">
       
-      {/* Background Glow */}
       <div className="absolute inset-0 opacity-10">
         <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.3),transparent_60%)]" />
       </div>
@@ -68,7 +67,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Product */}
+        
         <div>
           <h2 className="mb-6 text-lg font-semibold text-indigo-500">
             Product
