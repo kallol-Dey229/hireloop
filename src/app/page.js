@@ -1,12 +1,11 @@
 import StatsSection from "@/components/StateSecton";
-import Image from "next/image";
+import HomeSections from "@/components/HomeSections";
 
 export default function Home() {
   return (
-    <div>
-    <StatsSection/>
-  
+    <div className="bg-zinc-950">
+      <HomeSections />
+      <StatsSection />
     </div>
-
   );
 }
