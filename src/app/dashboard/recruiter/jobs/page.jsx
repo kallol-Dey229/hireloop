@@ -71,7 +71,6 @@ const RecruiterJobs = async () => {
                                         </div>
                                     </Table.Cell>
 
-                                    {/* Location */}
                                     <Table.Cell>
                                         <span className="text-sm text-default-600">
                                             {job.isRemote ? "Remote" : job.location}
