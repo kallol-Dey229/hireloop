@@ -4,10 +4,9 @@ import { MapPin, Briefcase, CircleDollar, ArrowRight } from "@gravity-ui/icons";
 import Image from "next/image";
 
 export default function JobCard({ job }) {
-  // Guard clause in case the prop isn't passed or is loading
+  
   if (!job) return null;
 
-  // Format salary string safely (e.g., "160000" becomes "160k")
   const formatSalary = (amount) => {
     if (!amount) return "0";
     const numericAmount = parseInt(amount, 10);
