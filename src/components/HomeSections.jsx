@@ -43,7 +43,7 @@ export default function HomeSections() {
         />
         <div className="absolute inset-0 -z-10 bg-linear-to-b from-black/20 via-[#101111]/65 to-[#101111]" />
 
-        <div className="mx-auto grid min-h-[560px] max-w-7xl items-center gap-12 px-6 py-20 md:px-8 lg:grid-cols-[1fr_0.72fr]">
+        <div className="mx-auto grid min-h-140 max-w-7xl items-center gap-12 px-6 py-20 md:px-8 lg:grid-cols-[1fr_0.72fr]">
           <div className="max-w-3xl">
             <p className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-lime-300">
               <span className="h-2 w-2 rounded-full bg-lime-300" />
