@@ -78,7 +78,6 @@ export default function StatsSection() {
                 {item.icon}
               </div>
 
-              {/* Value */}
               <h3 className="text-4xl font-bold text-white">
                 {item.value}
               </h3>
