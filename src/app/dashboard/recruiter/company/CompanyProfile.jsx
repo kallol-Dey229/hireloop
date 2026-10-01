@@ -96,7 +96,7 @@ export default function CompanyProfile({ recruiter, recruiterCompany }) {
             return;
         }
 
-        // Commit state updates
+        
         const newCompanyData = {
             name: companyName,
             websiteUrl,
