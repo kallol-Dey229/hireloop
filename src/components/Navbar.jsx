@@ -64,7 +64,7 @@ function Navbar() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-r from-violet-800 to-fuchsia-600 text-lg font-bold text-white">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-r from-blue-800 to-violet-950 text-lg font-bold text-white">
             H
           </div>
 
