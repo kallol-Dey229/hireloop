@@ -55,7 +55,7 @@ export default function StatsSection() {
         {/* Heading */}
         <div className="mb-14 text-center">
           <h2 className="mx-auto max-w-3xl text-3xl font-semibold leading-snug text-white md:text-3xl">
-            Assisting over 15,000 job seekers
+            Assisting over 12,000 job seekers
             <br />
             find their dream positions.
           </h2>

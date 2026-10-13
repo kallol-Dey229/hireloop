@@ -62,7 +62,7 @@ function Navbar() {
 
       <header className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:px-8">
 
-        
+        {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-r from-blue-800 to-violet-950 text-lg font-bold text-white">
             H
