@@ -13,7 +13,6 @@ export default async function Page({ searchParams }) {
   const queryString = querySearch.toString()
 
 
-  // Fetched server-side on the initial request
   const { jobs, total } = await getJobs(queryString);
 
   return (
