@@ -45,7 +45,7 @@ const getJobStyle = (title) => {
   return { icon: <Gear width="16" height="16" />, bg: 'bg-zinc-800 text-zinc-300' };
 };
 
-// Helper mapping for the status badges matching your screenshot colors
+
 const getStatusChip = (status = "Applied") => {
   const normalized = status.toLowerCase();
   switch (normalized) {
